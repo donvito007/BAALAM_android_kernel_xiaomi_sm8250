@@ -11,7 +11,7 @@
 #include <trace/events/sched.h>
 #include "sched.h"
 #include "walt.h"
-
+#define SCHED_CPUFREQ_GLK 0x00000004
 #include <trace/events/sched.h>
 
 const char *task_event_names[] = {"PUT_PREV_TASK", "PICK_NEXT_TASK",
