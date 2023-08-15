@@ -228,7 +228,11 @@ enum sysctl_writes_mode {
 	SYSCTL_WRITES_WARN		= 0,
 	SYSCTL_WRITES_STRICT		= 1,
 };
-
+struct binder_transaction {
+  int async_from_pid;
+  int async_from_tid;
+  uint64_t timesRecord;
+};
 static enum sysctl_writes_mode sysctl_writes_strict = SYSCTL_WRITES_STRICT;
 
 static int proc_do_cad_pid(struct ctl_table *table, int write,
