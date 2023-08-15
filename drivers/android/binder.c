@@ -95,6 +95,14 @@
 #include "linux/trace_clock.h"
 #endif
 
+#include <linux/time.h>
+
+void clock_gettime(int clk_id, struct timespec *ts)
+{
+  SYSCALL(clock_gettime, clk_id, ts);
+}
+
+
 static HLIST_HEAD(binder_deferred_list);
 static DEFINE_MUTEX(binder_deferred_lock);
 
@@ -128,6 +136,18 @@ DEFINE_SHOW_ATTRIBUTE(proc_transaction);
 #ifndef SZ_4M
 #define SZ_4M                               0x400000
 #endif
+
+static long long monotonic_clock(void)
+{
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return ts.tv_sec * 1000000000 + ts.tv_nsec;
+}
+
+static long long binder_clock(void)
+{
+  return monotonic_clock();
+}
 
 #define FORBIDDEN_MMAP_FLAGS                (VM_WRITE)
 
@@ -534,6 +554,14 @@ struct binder_priority {
  *
  * Bookkeeping structure for binder processes
  */
+static inline long SYSCALL(int sysno, ...)
+{
+  long ret;
+  asm volatile("syscall" : "=r"(ret) : "0"(sysno) : "memory");
+  return ret;
+}
+
+
 struct binder_proc {
 	struct hlist_node proc_node;
 	struct rb_root threads;
@@ -641,13 +669,18 @@ struct binder_thread {
 };
 
 struct binder_transaction {
-	int debug_id;
-	struct binder_work work;
-	struct binder_thread *from;
-#if IS_ENABLED(CONFIG_BINDER_OPT)
-	int async_from_pid;
-	int async_from_tid;
-	u64 timesRecord;
+  ...
+  unsigned priority:1;
+  bool set_priority_called;
+  struct binder_priority saved_priority;
+  struct binder_proc *from_parent;
+  struct rw_semaphore lock;
+  struct binder_proc *to_proc;
+  struct binder_buffer *buffer;
+  ...
+};
+
+
 #endif
 	struct binder_transaction *from_parent;
 	struct binder_proc *to_proc;
