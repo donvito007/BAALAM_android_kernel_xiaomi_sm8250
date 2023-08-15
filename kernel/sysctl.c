@@ -342,7 +342,7 @@ static struct ctl_table sysctl_base_table[] = {
 	{
 		.procname	= "kernel",
 		.mode		= 0555,
-		.child		= kern_table,
+		.child		= dev_table,
 	},
 	{
 		.procname	= "vm",
