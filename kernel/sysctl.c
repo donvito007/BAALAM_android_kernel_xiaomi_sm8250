@@ -307,7 +307,18 @@ static int bpf_unpriv_handler(struct ctl_table *table, int write,
 }
 #endif
 
-static struct ctl_table kern_table[];
+static struct ctl_table kern_table[] = {
+  {
+    .procname  = "boost_stask_to_big",
+    .data           = &sysctl_boost_stask_to_big,
+    .maxlen         = sizeof(int),
+    .mode           = 0644,
+    .proc_handler  = proc_dointvec,
+  },
+  {
+    .procname  = NULL,
+  },
+};
 static struct ctl_table vm_table[];
 static struct ctl_table fs_table[];
 static struct ctl_table debug_table[];
