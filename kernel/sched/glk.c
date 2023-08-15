@@ -35,7 +35,7 @@
 #include <linux/irq_work.h>
 #include "sched.h"
 #include "walt.h"
-
+#define SCHED_CPUFREQ_GLK 0x00000004
 #define TARGET_PERIOD(x) (MSEC_PER_SEC / (x))
 #define FRAME_LOAD_HISITMES 21
 enum FRAME_LOAD_TYPE {
