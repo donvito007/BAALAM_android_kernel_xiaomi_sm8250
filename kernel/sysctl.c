@@ -102,6 +102,7 @@
 #if defined(CONFIG_SYSCTL)
 
 /* External variables not in a header file. */
+static int sysctl_boost_stask_to_big;
 extern int suid_dumpable;
 #ifdef CONFIG_COREDUMP
 extern int core_uses_pid;
